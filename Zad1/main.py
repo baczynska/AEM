@@ -5,6 +5,8 @@ import math
 import random
 from decimal import localcontext, Decimal, ROUND_HALF_UP
 import operator
+import matplotlib.pyplot as plt
+import sys
 
 vertex_num = 100
 cycle_vertex_num = math.ceil(vertex_num / 2)
@@ -14,8 +16,17 @@ cycle_length = 0
 distance_matrix = np.full((vertex_num, vertex_num), -1)
 arr_of_vertex = []
 idxs = np.arange(vertex_num)
+nng_best = []
+gcy_best = []
+reg_best = []
+
+nng_suma = 0
+gcy_suma = 0
+reg_suma = 0
 
 distance_list = {}
+x_ = []
+y_ = []
 
 
 class Vertex:
@@ -44,6 +55,8 @@ def load_instance(instance_name):
 
         try:
             arr_of_vertex.append(Vertex(int(idx), int(ax[0]), int(ax[1])))
+            x_.append(int(ax[0]))
+            y_.append(int(ax[1]))
         except:
             continue
 
@@ -116,7 +129,16 @@ def count_distance(arry_with_vertexes):
     return distance
 
 
+def save_best_score(distance, minimum_length, x):
+
+    if distance < minimum_length[0]:
+        return [distance, x]
+    else:
+        return minimum_length
+
+
 def greedy_nearest_neigh(first_vertex, distance_array):
+    choosen_vertex = []
     cycle_length = 0
     choosen_vertex.append(first_vertex)
     next_vertex = first_vertex
@@ -132,7 +154,7 @@ def greedy_nearest_neigh(first_vertex, distance_array):
     print("Dlugosc cyklu:")
     print(count_distance(choosen_vertex))
 
-    return cycle_length
+    return choosen_vertex, count_distance(choosen_vertex)
 
 
 def greedy_cycle(first_vertex, distance_array):
@@ -152,14 +174,14 @@ def greedy_cycle(first_vertex, distance_array):
             if free_vertex not in choosen_vertex:
                 for p in range(len(choosen_vertex)):
                     choosen_vertex_copy1 = choosen_vertex.copy()
-                    choosen_vertex_copy1.insert(p + 1,free_vertex)
+                    choosen_vertex_copy1.insert(p + 1, free_vertex)
                     d = count_distance(choosen_vertex_copy1)
-                    if (the_best_result_after_insert is None) or ( d < the_best_result_after_insert):
+                    if (the_best_result_after_insert is None) or (d < the_best_result_after_insert):
                         the_best_option = choosen_vertex_copy1.copy()
                         the_best_result_after_insert = d
                     else:
                         continue
-        # print(the_best_option)
+
         choosen_vertex = the_best_option.copy()
 
     print("Lista wierzcholkow: ")
@@ -167,7 +189,7 @@ def greedy_cycle(first_vertex, distance_array):
     print("Dlugosc cyklu:")
     print(count_distance(choosen_vertex))
 
-    return cycle_length
+    return choosen_vertex, count_distance(choosen_vertex)
 
 
 def regret_heuristic(first_vertex, distance_array):
@@ -188,7 +210,6 @@ def regret_heuristic(first_vertex, distance_array):
                 vertex_places = {}
                 # w każde możliwe miejsce obecnego cyklu
                 for i in range(len(choosen_vertex)):
-
                     choosen_vertex_local_copy = list(choosen_vertex.copy())
                     choosen_vertex_local_copy.insert(i + 1, free_vertex)
                     # print(choosen_vertex_local_copy)
@@ -207,7 +228,22 @@ def regret_heuristic(first_vertex, distance_array):
     print("Dlugosc cyklu:")
     print(count_distance(choosen_vertex))
 
-    return cycle_length
+    return choosen_vertex, count_distance(choosen_vertex)
+
+
+def visualize(vertex_array):
+    new_x, new_y = zip(*sorted(zip(x_, y_)))
+    plt.plot(new_x, new_y, 'bo')
+
+    x_c = []
+    y_c = []
+    vertex_array.append(vertex_array[0])
+    for v in vertex_array:
+        x_c.append(x_[v])
+        y_c.append(y_[v])
+    plt.plot(x_c, y_c)
+    plt.show()
+
 
 """
     Wczytanie pliku do macierzy odległości
@@ -245,22 +281,62 @@ load_instance("kroB100.tsp.txt")
 """
     Wszystkie algorytmy
 """
-for x in random.sample(list(idxs), 100):
+for x in random.sample(list(idxs), 50):
     print("First vertex: ", x)
+
     print("Algorytm NNG")
+
     fill_dictance_matrix()
     working_distance_array = distance_matrix.copy()
-    choosen_vertex = []
-    cycle_length = greedy_nearest_neigh(x, working_distance_array)
+    choosen_vertex, distance = greedy_nearest_neigh(x, working_distance_array)
+    nng_best.append([distance, x, choosen_vertex])
+    nng_suma += distance
+
+    # visualize(choosen_vertex)
+
     print("Algorytm GCY")
 
-    choosen_vertex = []
     fill_dictance_matrix()
     working_distance_array2 = distance_matrix.copy()
-    greedy_cycle(x, working_distance_array2)
+    choosen_vertex, distance = greedy_cycle(x, working_distance_array2)
+    gcy_best.append([distance, x, choosen_vertex])
+    gcy_suma += distance
+
+    # visualize(choosen_vertex)
+
     print("Algorytm ŻALU")
 
-    choosen_vertex = []
     fill_dictance_matrix()
     working_distance_array3 = distance_matrix.copy()
-    regret_heuristic(x, working_distance_array3)
+    choosen_vertex, distance = regret_heuristic(x, working_distance_array3)
+    reg_best.append([distance, x, choosen_vertex])
+    reg_suma += distance
+
+    # visualize(choosen_vertex)
+
+    print("******************************************")
+
+best_nng = sorted(nng_best, key=lambda x: x[0])[0]
+print("Best score (NNG): ", best_nng[0])
+best_gcy = sorted(gcy_best, key=lambda x: x[0])[0]
+print("Best score (GCY): ", best_gcy[0])
+best_reg = sorted(reg_best, key=lambda x: x[0])[0]
+print("Best score (REG): ", best_reg[0])
+
+worse_nng = sorted(nng_best, key=lambda x: x[0])[-1]
+print("Worse score (NNG): ", worse_nng[0])
+worse_gcy = sorted(gcy_best, key=lambda x: x[0])[-1]
+print("Worse score (GCY): ", worse_gcy[0])
+worse_reg = sorted(reg_best, key=lambda x: x[0])[-1]
+print("Worse score (REG): ", worse_reg[0])
+
+print("Mean for NNG: ", float(nng_suma/50))
+print("Mean for GCY: ", float(gcy_suma/50))
+print("Mean for REG: ", float(reg_suma/50))
+
+
+visualize(best_nng[-1])
+visualize(best_gcy[-1])
+visualize(best_reg[-1])
+
+
