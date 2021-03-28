@@ -12,7 +12,6 @@ import time
 vertex_num = 100
 cycle_vertex_num = math.ceil(vertex_num / 2)
 choosen_vertex = []
-cycle_length = 0
 
 distance_matrix = np.full((vertex_num, vertex_num), -1)
 arr_of_vertex = []
@@ -157,7 +156,9 @@ def greedy_edge(cycle, not_cycle, method, randomx, randomy):
             best = new_cycle.copy()
     else:
         new_cycle = cycle.copy()
+        print(len(new_cycle))
         swap_edge(new_cycle, randomx, randomy)
+        print(len(new_cycle))
         new_length = count_distance(new_cycle)
         if (new_length < length): 
             length = new_length
@@ -260,7 +261,7 @@ def generate_random_cycle():
     cycle_length = count_distance(cycle)
     return cycle, not_cycle, cycle_length
 
-def visualize(vertex_array):
+def visualize(vertex_array, title):
     new_x, new_y = zip(*sorted(zip(x_, y_)))
     plt.plot(new_x, new_y, 'bo')
 
@@ -271,10 +272,41 @@ def visualize(vertex_array):
         x_c.append(x_[v])
         y_c.append(y_[v])
     plt.plot(x_c, y_c)
+    plt.title(title)
     plt.show()
 
 load_instance("kroA100.tsp.txt")
 fill_distance_matrix()
+
+#random
+
+best = []
+best_length = 999999
+worst_length = 0
+avg_length = 0
+"""
+start = time.time()
+while(1):
+    cycle, not_cycle, cycle_length = generate_random_cycle()
+    if(cycle_length<best_length):
+        best_length = cycle_length
+    now = time.time()
+    if(now - start > 27):
+        break
+print(best_length)
+"""
+#generate initial instances
+cycles = []
+not_cycles = []
+cycle_lengths = []
+for i in range(100):
+    cycle1, not_cycle1, cycle_length1 = generate_random_cycle()
+    cycles.append(cycle1)
+    not_cycles.append(not_cycle1)
+    cycle_lengths.append(cycle_length1)
+    f = open("initial_instances.txt", "w")
+    f.write(str(i) + ": " + str(cycles[i]) + "\n")
+    f.write(str(cycle_lengths[i]) + "\n")
 
 #steepest vertex
 best = []
@@ -284,9 +316,9 @@ avg_length = 0
 best_time = 99999999
 worst_time = 0
 avg_time = 0
-
+"""
 for i in range(100):
-    cycle, not_cycle, cycle_length = generate_random_cycle()
+    cycle, not_cycle, cycle_length = cycles[i], not_cycles[i], cycle_lengths[i]
     tmpcycle = cycle.copy()
     tmpnotcycle = not_cycle.copy()
     start = time.time()
@@ -313,11 +345,9 @@ f.write("Average cycle length of steepest vertex:" + str(avg_length/100) + "\n")
 f.write("Best time of steepest vertex:" + str(best_time) + "\n")
 f.write("Worst time of steepest vertex:" + str(worst_time) + "\n")
 f.write("Average time of steepest vertex:" + str(avg_time/100) + "\n")
-visualize(best)
+visualize(best, "steepest_vertex")
 
 #steepest edge
-
-"""
 best = []
 best_length = 999999
 worst_length = 0
@@ -326,8 +356,8 @@ best_time = 99999999
 worst_time = 0
 avg_time = 0
 
-for i in range(10):
-    cycle, not_cycle, cycle_length = generate_random_cycle()
+for i in range(100):
+    cycle, not_cycle, cycle_length = cycles[i], not_cycles[i], cycle_lengths[i]
     tmpcycle = cycle.copy()
     tmpnotcycle = not_cycle.copy()
     start = time.time()
@@ -348,15 +378,14 @@ for i in range(10):
         worst_time = cur_time
 
 f = open("steepest_edge_result.txt", "w")
-f.write("Best cycle length of greedy edge:" + str(best_length) + "\n")
-f.write("Worst cycle length of greedy edge:" + str(worst_length) + "\n")
-f.write("Average cycle length of greedy edge:" + str(avg_length/10) + "\n")
-f.write("Best time of greedy edge:" + str(best_time) + "\n")
-f.write("Worst time of greedy edge:" + str(worst_time) + "\n")
-f.write("Average time of greedy edge:" + str(avg_time/10) + "\n")
-visualize(best)
-"""
-"""
+f.write("Best cycle length of steepest edge:" + str(best_length) + "\n")
+f.write("Worst cycle length of steepest edge:" + str(worst_length) + "\n")
+f.write("Average cycle length of steepest edge:" + str(avg_length/100) + "\n")
+f.write("Best time of steepest edge:" + str(best_time) + "\n")
+f.write("Worst time of steepest edge:" + str(worst_time) + "\n")
+f.write("Average time of steepest edge:" + str(avg_time/100) + "\n")
+visualize(best, "steepest_edge")
+
 #greedy vertex
 best = []
 best_length = 999999
@@ -367,7 +396,7 @@ worst_time = 0
 avg_time = 0
 
 for i in range(100):
-    cycle, not_cycle, cycle_length = generate_random_cycle()
+    cycle, not_cycle, cycle_length = cycles[i], not_cycles[i], cycle_lengths[i]
     tmpcycle = cycle.copy()
     tmpnotcycle = not_cycle.copy()
     start = time.time()
@@ -388,14 +417,13 @@ for i in range(100):
         worst_time = cur_time
 
 f = open("greedy_vertex_result.txt", "w")
-f.write("Best cycle length of greedy edge:" + str(best_length) + "\n")
-f.write("Worst cycle length of greedy edge:" + str(worst_length) + "\n")
-f.write("Average cycle length of greedy edge:" + str(avg_length/100) + "\n")
-f.write("Best time of greedy edge:" + str(best_time) + "\n")
-f.write("Worst time of greedy edge:" + str(worst_time) + "\n")
-f.write("Average time of greedy edge:" + str(avg_time/100) + "\n")
-visualize(best)
-"""
+f.write("Best cycle length of greedy vertex:" + str(best_length) + "\n")
+f.write("Worst cycle length of greedy vertex:" + str(worst_length) + "\n")
+f.write("Average cycle length of greedy vertex:" + str(avg_length/100) + "\n")
+f.write("Best time of greedy vertex:" + str(best_time) + "\n")
+f.write("Worst time of greedy vertex:" + str(worst_time) + "\n")
+f.write("Average time of greedy vertex:" + str(avg_time/100) + "\n")
+visualize(best, "greedy_vertex")
 """
 #greedy edge
 best = []
@@ -406,8 +434,8 @@ best_time = 99999999
 worst_time = 0
 avg_time = 0
 
-for i in range(100):
-    cycle, not_cycle, cycle_length = generate_random_cycle()
+for i in range():
+    cycle, not_cycle, cycle_length = cycles[i], not_cycles[i], cycle_lengths[i]
     tmpcycle = cycle.copy()
     tmpnotcycle = not_cycle.copy()
     start = time.time()
@@ -434,5 +462,4 @@ f.write("Average cycle length of greedy edge:" + str(avg_length/100) + "\n")
 f.write("Best time of greedy edge:" + str(best_time) + "\n")
 f.write("Worst time of greedy edge:" + str(worst_time) + "\n")
 f.write("Average time of greedy edge:" + str(avg_time/100) + "\n")
-visualize(best)
-"""
+visualize(best, "greedy_edge")

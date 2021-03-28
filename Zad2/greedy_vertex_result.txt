@@ -1,6 +1,6 @@
-Best cycle length of greedy edge:11210
-Worst cycle length of greedy edge:22119
-Average cycle length of greedy edge:16201.59
-Best time of greedy edge:2.2741682529449463
-Worst time of greedy edge:9.453565120697021
-Average time of greedy edge:4.700446653366089
+Best cycle length of greedy vertex:12000
+Worst cycle length of greedy vertex:19802
+Average cycle length of greedy vertex:16038.24
+Best time of greedy vertex:2.4223477840423584
+Worst time of greedy vertex:9.451958179473877
+Average time of greedy vertex:4.525296487808228
