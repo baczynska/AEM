@@ -1,6 +1,0 @@
-Best cycle length of greedy edge:15126
-Worst cycle length of greedy edge:15126
-Average cycle length of greedy edge:151.26
-Best time of greedy edge:30.76642608642578
-Worst time of greedy edge:30.76642608642578
-Average time of greedy edge:0.3076642608642578

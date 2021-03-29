@@ -1,0 +1,6 @@
+Best cycle length of steepest vertex:16463
+Worst cycle length of steepest vertex:18098
+Average cycle length of steepest vertex:345.61
+Best time of steepest vertex:22.419677257537842
+Worst time of steepest vertex:24.854837656021118
+Average time of steepest vertex:0.4727451491355896

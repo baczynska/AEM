@@ -1,0 +1,6 @@
+Best cycle length of greedy vertex:12986
+Worst cycle length of greedy vertex:22837
+Average cycle length of greedy vertex:16758.59
+Best time of greedy vertex:1.6301229000091553
+Worst time of greedy vertex:6.937515735626221
+Average time of greedy vertex:3.661828491687775

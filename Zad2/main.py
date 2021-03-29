@@ -83,8 +83,12 @@ def swap_vertex(cycle, position1, position2):
     return cycle
 
 def swap_edge(cycle, position1, position2):
-    tmp = cycle[position1:position2]
-    cycle = cycle[:position1] + tmp[::-1] + cycle[position2:]
+    if(position1 < position2):
+        tmp = cycle[position1:position2]
+        cycle = cycle[:position1] + tmp[::-1] + cycle[position2:]
+    else:
+        tmp = cycle[position2:position1]
+        cycle = cycle[:position2] + tmp[::-1] + cycle[position1:]
     return cycle
 
 def steepest_vertex(cycle, not_cycle):
@@ -118,11 +122,11 @@ def steepest_edge(cycle, not_cycle):
                 length = new_length
                 best = new_cycle.copy()
             new_cycle = cycle.copy()
-            swap_edge(new_cycle, id, idn)
+            new_cycle = swap_edge(new_cycle, id, idn).copy()
             new_length = count_distance(new_cycle)
             if (new_length < length): 
                 length = new_length
-                best = cycle.copy()
+                best = new_cycle.copy()
     return best, length
 
 def greedy_vertex(cycle, not_cycle, method, randomx, randomy):
@@ -156,9 +160,7 @@ def greedy_edge(cycle, not_cycle, method, randomx, randomy):
             best = new_cycle.copy()
     else:
         new_cycle = cycle.copy()
-        print(len(new_cycle))
-        swap_edge(new_cycle, randomx, randomy)
-        print(len(new_cycle))
+        new_cycle = swap_edge(new_cycle, randomx, randomy).copy()
         new_length = count_distance(new_cycle)
         if (new_length < length): 
             length = new_length
@@ -201,18 +203,20 @@ def greedy_vertex_whole(cycle, not_cycle, cycle_length):
                 if length2 < cycle_length:
                     cycle = vcycle.copy()
                     setcycle = set(cycle)
-                    not_cycle = list(set100.difference(setcycle)).copy()
+                    not_cycle = list(set100.difference(setcycle))
                     break
             if length2 < cycle_length:
                 break
         
-        if(length2 >= cycle_length):
+        if(length2 == cycle_length):
             m2 = methods[1]
             for x in randomx:
                 for y in randomy:
                     vcycle, length2 = greedy_vertex(cycle, not_cycle, m2, x, y)
                     if length2 < cycle_length:
                         cycle = vcycle.copy()
+                        setcycle = set(cycle)
+                        not_cycle = list(set100.difference(setcycle))
                         break
                 if length2 < cycle_length:
                     break
@@ -229,6 +233,7 @@ def greedy_edge_whole(cycle, not_cycle, cycle_length):
         methods = [1, 2]
         random.shuffle(methods)
         m1 = methods[0]
+        m2 = methods[1]
 
         for x in randomx:
             for y in randomy:
@@ -236,18 +241,19 @@ def greedy_edge_whole(cycle, not_cycle, cycle_length):
                 if length2 < cycle_length:
                     cycle = vcycle.copy()
                     setcycle = set(cycle)
-                    not_cycle = list(set100.difference(setcycle)).copy()
+                    not_cycle = list(set100.difference(setcycle))
                     break
             if length2 < cycle_length:
                 break
         
-        if(length2 >= cycle_length):
-            m2 = methods[1]
+        if(length2 == cycle_length):
             for x in randomx:
                 for y in randomy:
                     vcycle, length2 = greedy_edge(cycle, not_cycle, m2, x, y)
                     if length2 < cycle_length:
                         cycle = vcycle.copy()
+                        setcycle = set(cycle)
+                        not_cycle = list(set100.difference(setcycle))
                         break
                 if length2 < cycle_length:
                     break
@@ -278,36 +284,45 @@ def visualize(vertex_array, title):
 load_instance("kroA100.tsp.txt")
 fill_distance_matrix()
 
+"""
 #random
-
 best = []
 best_length = 999999
 worst_length = 0
 avg_length = 0
-"""
+
 start = time.time()
 while(1):
     cycle, not_cycle, cycle_length = generate_random_cycle()
     if(cycle_length<best_length):
         best_length = cycle_length
+        best = cycle.copy()
+    if(cycle_length>worst_length):
+        worst_length = cycle_length
+    avg_length = (avg_length+cycle_length)/2
     now = time.time()
-    if(now - start > 27):
+    if(now - start > 15):
         break
 print(best_length)
-"""
+print(worst_length)
+print(avg_length)
+visualize(best, "random")
 #generate initial instances
 cycles = []
 not_cycles = []
 cycle_lengths = []
+"""
+#generate instances
 for i in range(100):
     cycle1, not_cycle1, cycle_length1 = generate_random_cycle()
     cycles.append(cycle1)
     not_cycles.append(not_cycle1)
     cycle_lengths.append(cycle_length1)
-    f = open("initial_instances.txt", "w")
+    f = open("initial_instancesA.txt", "a")
     f.write(str(i) + ": " + str(cycles[i]) + "\n")
     f.write(str(cycle_lengths[i]) + "\n")
 
+"""
 #steepest vertex
 best = []
 best_length = 999999
@@ -316,7 +331,7 @@ avg_length = 0
 best_time = 99999999
 worst_time = 0
 avg_time = 0
-"""
+
 for i in range(100):
     cycle, not_cycle, cycle_length = cycles[i], not_cycles[i], cycle_lengths[i]
     tmpcycle = cycle.copy()
@@ -338,7 +353,7 @@ for i in range(100):
     if(cur_time > worst_time):
         worst_time = cur_time
 
-f = open("steepest_vertex_result.txt", "w")
+f = open("steepest_vertex_resultA.txt", "w")
 f.write("Best cycle length of steepest vertex:" + str(best_length) + "\n")
 f.write("Worst cycle length of steepest vertex:" + str(worst_length) + "\n")
 f.write("Average cycle length of steepest vertex:" + str(avg_length/100) + "\n")
@@ -377,7 +392,7 @@ for i in range(100):
     if(cur_time > worst_time):
         worst_time = cur_time
 
-f = open("steepest_edge_result.txt", "w")
+f = open("steepest_edge_resultA.txt", "w")
 f.write("Best cycle length of steepest edge:" + str(best_length) + "\n")
 f.write("Worst cycle length of steepest edge:" + str(worst_length) + "\n")
 f.write("Average cycle length of steepest edge:" + str(avg_length/100) + "\n")
@@ -416,7 +431,7 @@ for i in range(100):
     if(cur_time > worst_time):
         worst_time = cur_time
 
-f = open("greedy_vertex_result.txt", "w")
+f = open("greedy_vertex_resultA.txt", "w")
 f.write("Best cycle length of greedy vertex:" + str(best_length) + "\n")
 f.write("Worst cycle length of greedy vertex:" + str(worst_length) + "\n")
 f.write("Average cycle length of greedy vertex:" + str(avg_length/100) + "\n")
@@ -424,7 +439,8 @@ f.write("Best time of greedy vertex:" + str(best_time) + "\n")
 f.write("Worst time of greedy vertex:" + str(worst_time) + "\n")
 f.write("Average time of greedy vertex:" + str(avg_time/100) + "\n")
 visualize(best, "greedy_vertex")
-"""
+
+
 #greedy edge
 best = []
 best_length = 999999
@@ -434,7 +450,7 @@ best_time = 99999999
 worst_time = 0
 avg_time = 0
 
-for i in range():
+for i in range(100):
     cycle, not_cycle, cycle_length = cycles[i], not_cycles[i], cycle_lengths[i]
     tmpcycle = cycle.copy()
     tmpnotcycle = not_cycle.copy()
@@ -455,7 +471,7 @@ for i in range():
     if(cur_time > worst_time):
         worst_time = cur_time
 
-f = open("greedy_edge_result.txt", "w")
+f = open("greedy_edge_resultA.txt", "w")
 f.write("Best cycle length of greedy edge:" + str(best_length) + "\n")
 f.write("Worst cycle length of greedy edge:" + str(worst_length) + "\n")
 f.write("Average cycle length of greedy edge:" + str(avg_length/100) + "\n")
@@ -463,3 +479,5 @@ f.write("Best time of greedy edge:" + str(best_time) + "\n")
 f.write("Worst time of greedy edge:" + str(worst_time) + "\n")
 f.write("Average time of greedy edge:" + str(avg_time/100) + "\n")
 visualize(best, "greedy_edge")
+
+"""
