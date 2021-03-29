@@ -307,12 +307,12 @@ print(best_length)
 print(worst_length)
 print(avg_length)
 visualize(best, "random")
+"""
 #generate initial instances
 cycles = []
 not_cycles = []
 cycle_lengths = []
-"""
-#generate instances
+
 for i in range(100):
     cycle1, not_cycle1, cycle_length1 = generate_random_cycle()
     cycles.append(cycle1)
