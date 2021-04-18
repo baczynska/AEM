@@ -85,7 +85,7 @@ def change_vertex_set(cycle, not_cycle, position1, position2):
 
 
 def swap_edge(cycle, position1, position2):
-    new_cycle = copy.deepcopy(cycle)
+    new_cycle = cycle
     if position1 < position2:
         tmp = new_cycle[position1:position2]
         new_cycle = new_cycle[:position1] + tmp[::-1] + new_cycle[position2:]
@@ -308,46 +308,6 @@ for i in range(100):
     f.write(str(cycle_lengths[i]) + "\n")
 
 # steepest edge, LM
-# best = []
-# best_length = 999999
-# worst_length = 0
-# avg_length = 0
-# best_time = 99999999
-# worst_time = 0
-# avg_time = 0
-#
-# for i in range(100):
-#     print("************" + str(i) + "***************")
-#     cycle, not_cycle, cycle_length = cycles[i], not_cycles[i], cycle_lengths[i]
-#     tmpcycle = cycle.copy()
-#     start = time.time()
-#     result, length = steepest_edge_whole_LM(tmpcycle, cycle_length)
-#     # print(length)
-#     print(result)
-#     end = time.time()
-#     cur_time = end - start
-#     avg_time += cur_time
-#     avg_length += length
-#     if length < best_length:
-#         best_length = length
-#         best = result.copy()
-#     if length > worst_length:
-#         worst_length = length
-#     if cur_time < best_time:
-#         best_time = cur_time
-#     if cur_time > worst_time:
-#         worst_time = cur_time
-#
-# f = open("steepest_edge_resultA_LM.txt", "w")
-# f.write("Best cycle length of steepest edge:" + str(best_length) + "\n")
-# f.write("Worst cycle length of steepest edge:" + str(worst_length) + "\n")
-# f.write("Average cycle length of steepest edge:" + str(avg_length / 100) + "\n")
-# f.write("Best time of steepest edge:" + str(best_time) + "\n")
-# f.write("Worst time of steepest edge:" + str(worst_time) + "\n")
-# f.write("Average time of steepest edge:" + str(avg_time / 100) + "\n")
-# visualize(best, "steepest_edge")
-
-# steepest edge, Kandydackie
 best = []
 best_length = 999999
 worst_length = 0
@@ -359,11 +319,9 @@ avg_time = 0
 for i in range(100):
     print("************" + str(i) + "***************")
     cycle, not_cycle, cycle_length = cycles[i], not_cycles[i], cycle_lengths[i]
-    # visualize(cycle, "steepest_edge")
     tmpcycle = cycle.copy()
     start = time.time()
-    fill_distance_matrix()
-    result, length = steepest_edge_whole_kan(tmpcycle)
+    result, length = steepest_edge_whole_LM(tmpcycle, cycle_length)
     # print(length)
     print(result)
     end = time.time()
@@ -380,7 +338,7 @@ for i in range(100):
     if cur_time > worst_time:
         worst_time = cur_time
 
-f = open("steepest_edge_resultA_kan.txt", "w")
+f = open("steepest_edge_resultA_LM.txt", "w")
 f.write("Best cycle length of steepest edge:" + str(best_length) + "\n")
 f.write("Worst cycle length of steepest edge:" + str(worst_length) + "\n")
 f.write("Average cycle length of steepest edge:" + str(avg_length / 100) + "\n")
@@ -388,3 +346,45 @@ f.write("Best time of steepest edge:" + str(best_time) + "\n")
 f.write("Worst time of steepest edge:" + str(worst_time) + "\n")
 f.write("Average time of steepest edge:" + str(avg_time / 100) + "\n")
 visualize(best, "steepest_edge")
+
+# steepest edge, Kandydackie
+# best = []
+# best_length = 999999
+# worst_length = 0
+# avg_length = 0
+# best_time = 99999999
+# worst_time = 0
+# avg_time = 0
+#
+# for i in range(100):
+#     print("************" + str(i) + "***************")
+#     cycle, not_cycle, cycle_length = cycles[i], not_cycles[i], cycle_lengths[i]
+#     # visualize(cycle, "steepest_edge")
+#     tmpcycle = cycle.copy()
+#     start = time.time()
+#     fill_distance_matrix()
+#     result, length = steepest_edge_whole_kan(tmpcycle)
+#     # print(length)
+#     print(result)
+#     end = time.time()
+#     cur_time = end - start
+#     avg_time += cur_time
+#     avg_length += length
+#     if length < best_length:
+#         best_length = length
+#         best = result.copy()
+#     if length > worst_length:
+#         worst_length = length
+#     if cur_time < best_time:
+#         best_time = cur_time
+#     if cur_time > worst_time:
+#         worst_time = cur_time
+#
+# f = open("steepest_edge_resultA_kan.txt", "w")
+# f.write("Best cycle length of steepest edge:" + str(best_length) + "\n")
+# f.write("Worst cycle length of steepest edge:" + str(worst_length) + "\n")
+# f.write("Average cycle length of steepest edge:" + str(avg_length / 100) + "\n")
+# f.write("Best time of steepest edge:" + str(best_time) + "\n")
+# f.write("Worst time of steepest edge:" + str(worst_time) + "\n")
+# f.write("Average time of steepest edge:" + str(avg_time / 100) + "\n")
+# visualize(best, "steepest_edge")
