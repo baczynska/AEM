@@ -155,7 +155,7 @@ def steepest_edge_kan(cycle):
 
             # print(distance_matrix[x])
             # print(sorted(range(len(distance_matrix[x])), key=lambda k: distance_matrix[x][k]))
-            the_closest = sorted(range(len(distance_matrix[x])), key=lambda k: distance_matrix[x][k])[1:]
+            the_closest = sorted(range(len(distance_matrix[x])), key=lambda k: distance_matrix[x][k])[1:20]
             for nc in the_closest:
                 # wprowadzenie krawedzi do rozwiazania
                 if nc not in cycle:
@@ -170,7 +170,8 @@ def steepest_edge_kan(cycle):
                         cycle = new_cycle.copy()
                         search = True
 
-                    _, new_cycle = swap_edge(new_cycle, id, new_cycle.index(nc))
+                if nc in cycle:
+                    _, new_cycle = swap_edge(cycle, id, cycle.index(nc))
                     new_length = count_distance(new_cycle)
 
                     if new_length < length:
