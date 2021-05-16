@@ -217,7 +217,7 @@ def visualize(vertex_array, title):
 
 def pertubation_1(cycle, not_cycle):
 
-    for i in range(5):
+    for i in range(4):
         vertex1 = random.randint(0,99)
         vertex2 = random.randint(0,99)
         cycle = change_vertex_set(cycle, not_cycle, vertex1, vertex2).copy()
@@ -225,10 +225,15 @@ def pertubation_1(cycle, not_cycle):
 
     return cycle, not_cycle
 
-def find_the_closest_to(vertex_id, distance_array):
-    min_value = min(i for i in distance_array[:, vertex_id] if i > 0)
+def find_the_closest_to(vertex_id, distance_array, exclude):
 
-    return list(distance_array[:, vertex_id]).index(min_value), min_value
+    for i in exclude:
+        for j in range(200):
+            distance_array[i, j] = -1
+            distance_array[j, i] = -1
+
+    min_value = min(i for i in distance_array[:, vertex_id] if i > 0)
+    return list(distance_array[:, vertex_id]).index(min_value)
 
 def reset_for(vertex, distance_array):
     distance_array[:, vertex] = -1
@@ -236,11 +241,11 @@ def reset_for(vertex, distance_array):
 
     return distance_array
 
-def greedy_nearest_neigh(cycle, first_vertex, distance_array):
+def greedy_nearest_neigh(cycle, first_vertex, distance_array, exclude):
     result = cycle.copy()
     next_vertex = first_vertex
     for x in range(20):
-        new_vertex, distance = find_the_closest_to(next_vertex, distance_array)
+        new_vertex = find_the_closest_to(next_vertex, distance_array, exclude)
         distance_array = reset_for(next_vertex, distance_array)
         next_vertex = new_vertex
         result.append(new_vertex)
@@ -251,15 +256,15 @@ def pertubation_2(cycle, not_cycle, distance_array):
     new_cycle = []
 
     starting_point = random.randint(1, 79)
-    destroyed = cycle[:starting_point] + cycle[starting_point+20:]
-
-    new_cycle = greedy_nearest_neigh(cycle[:starting_point], cycle[starting_point-1], distance_array) + cycle[starting_point+20:]
-    not_cycle = set200.difference(set(new_cycle)).copy()
+    destroyed1 = cycle[:starting_point] 
+    destroyed2 = cycle[starting_point+20:]
+    new_cycle = greedy_nearest_neigh(destroyed1, cycle[starting_point], distance_array, destroyed2+destroyed1) + destroyed2
+    not_cycle = list(set200.difference(set(new_cycle)).copy())
     
     return new_cycle, not_cycle
 
 
-load_instance("kroA200.tsp.txt")
+load_instance("kroB200.tsp.txt")
 fill_distance_matrix()
 
 msls_results = []
@@ -297,6 +302,7 @@ for x in range(10):
     cur_time = end - start
 
     avg_time += cur_time 
+    print(cur_time)
     print(best_length)
     msls_results.append(best_length)
 
@@ -308,7 +314,7 @@ msls_min = min(msls_results)
 
 visualize(best, "MSLS")
 
-f = open("resultA.txt", "w")
+f = open("resultB.txt", "w")
 f.write("Best cycle length of MSLS: " + str(msls_min) + "\n")
 f.write("Worst cycle length of MSLS: " + str(msls_max) + "\n")
 f.write("Average cycle length of MSLS: " + str(msls_avg) + "\n")
@@ -326,7 +332,8 @@ for x in range(10):
 
     cycle, not_cycle, cycle_length = generate_random_cycle()
     tmpcycle = cycle.copy()
-    result, best_length = steepest_edge_whole_kan(tmpcycle)
+    cycle, best_length = steepest_edge_whole_kan(tmpcycle)
+    not_cycle = list(set200.difference(set(cycle)).copy())
 
     while end < avg_time:
         cycle_y, not_cycle_y = pertubation_1(cycle, not_cycle)
@@ -336,7 +343,7 @@ for x in range(10):
         if length < best_length:
             best_length = length
             best = result.copy()
-            cycle = tmpcycle.copy()
+            cycle = result.copy()
             not_cycle = not_cycle_y.copy()
 
         end = time.time() - start
@@ -366,7 +373,8 @@ for x in range(10):
 
     cycle, not_cycle, cycle_length = generate_random_cycle()
     tmpcycle = cycle.copy()
-    result, best_length = steepest_edge_whole_kan(tmpcycle)
+    cycle, best_length = steepest_edge_whole_kan(tmpcycle)
+    not_cycle = list(set200.difference(set(cycle)).copy())
 
     while end < avg_time:
         fill_dictance_matrix()
@@ -378,7 +386,7 @@ for x in range(10):
         if length < best_length:
             best_length = length
             best = result.copy()
-            cycle = tmpcycle.copy()
+            cycle = result.copy()
             not_cycle = not_cycle_y.copy()
 
         end = time.time() - start

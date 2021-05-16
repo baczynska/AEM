@@ -1,0 +1,12 @@
+Best cycle length of MSLS: 14363
+Worst cycle length of MSLS: 15302
+Average cycle length of MSLS: 14957.1
+Best cycle length of ILS1: 14403
+Worst cycle length of ILS1: 15283
+Average cycle length of ILS1: 14837.1
+Best cycle length of ILS2: 13186
+Worst cycle length of ILS2: 14389
+Average cycle length of ILS2: 13775.1
+Best cycle length of ILS2a: 17321
+Worst cycle length of ILS2a: 23801
+Average cycle length of ILS2a: 20458.7
