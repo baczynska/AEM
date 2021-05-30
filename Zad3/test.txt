@@ -1,0 +1,6 @@
+Best cycle length of steepest edge:16202
+Worst cycle length of steepest edge:23648
+Average cycle length of steepest edge:18783.69
+Best time of steepest edge:0.2718510627746582
+Worst time of steepest edge:0.5281810760498047
+Average time of steepest edge:0.3571707534790039

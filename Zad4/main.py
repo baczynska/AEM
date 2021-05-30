@@ -271,9 +271,8 @@ msls_results = []
 msls_avg = 0
 msls_min = 0
 msls_max = 0
-best_time = 99999999
-worst_time = 0
-avg_time = 0
+times = []
+
 
 for x in range(10):
     # generate initial instances
@@ -299,18 +298,14 @@ for x in range(10):
             best = result.copy()
 
     end = time.time()
-    cur_time = end - start
-
-    avg_time += cur_time 
-    print(cur_time)
+    times.append(end - start)
     print(best_length)
     msls_results.append(best_length)
-
-avg_time = avg_time/10
 
 msls_avg = sum(msls_results)/len(msls_results)
 msls_max = max(msls_results)
 msls_min = min(msls_results)
+avg_time = sum(times) / 10
 
 visualize(best, "MSLS")
 
@@ -318,6 +313,9 @@ f = open("resultB.txt", "w")
 f.write("Best cycle length of MSLS: " + str(msls_min) + "\n")
 f.write("Worst cycle length of MSLS: " + str(msls_max) + "\n")
 f.write("Average cycle length of MSLS: " + str(msls_avg) + "\n")
+f.write("Best time of steepest edge:" + str(min(times)) + "\n")
+f.write("Worst time of steepest edge:" + str(max(times)) + "\n")
+f.write("Average time of steepest edge:" + str(avg_time) + "\n")
 
 ils1_results = []
 ils1_avg = 0
